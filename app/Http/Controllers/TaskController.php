@@ -67,6 +67,7 @@ class TaskController extends Controller
     ]);
     }
 
+
     public function edit($id)
     {
         $pageTitle = 'Edit Task';
@@ -75,5 +76,10 @@ class TaskController extends Controller
         $task = $tasks[$id - 1];
 
         return view('tasks.edit', ['pageTitle' => $pageTitle, 'task' => $task]);
+    }
+
+    public function create(){
+        $pageTitle = 'Add task';
+        return view('tasks.create', ['pageTitle' => $pageTitle]);
     }
 }
