@@ -26,4 +26,6 @@ Route::prefix('tasks')
     Route::post('/', 'store')->name('store');
     Route::get('{id}/edit', 'edit')->name('edit');
     Route::put('/{id}', 'update')->name('update');
+    Route::get('/{id}/delete', 'delete')->name('delete');
+    Route::delete('/{id}','destroy')->name('destroy');
 }); 
