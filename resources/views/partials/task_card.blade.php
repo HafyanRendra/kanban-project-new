@@ -1,9 +1,9 @@
 <div class="task-progress-card">
   <div class="task-progress-card-left">
     @if ($task->status == 'completed')
-      <div class="material-icons task-progress-card-top-checked">check_circle</div>
+      <div  class="material-icons task-progress-card-top-checked">check_circle</div>
     @else
-      <div class="material-icons task-progress-card-top-check">check_circle</div>
+      <a href="{{route('tasks.updateStatusCardBlade',['id'=>$task->id])}}" class="material-icons task-progress-card-top-check">check_circle</a>
     @endif
     <a href="{{ route('tasks.edit', ['id' => $task->id]) }}" class="material-icons task-progress-card-top-edit">more_vert</a>
   </div>
@@ -16,11 +16,27 @@
   </div>
   <div class="@if ($leftStatus) task-progress-card-left @else task-progress-card-right @endif">
     @if ($leftStatus)
-      <button class="material-icons">chevron_left</button>
+     
+      <form
+        action="{{ route('tasks.move', ['id' => $task->id, 'status' => $leftStatus]) }}" 
+        method="POST"
+      >
+        @method('patch')
+        @csrf
+        <button class="material-icons">chevron_left</button>
+      </form>
     @endif
 
     @if ($rightStatus)
-      <button class="material-icons">chevron_right</button>
+     
+      <form
+        action="{{ route('tasks.move', ['id' => $task->id, 'status' => $rightStatus]) }}"
+        method="POST"
+      >
+        @method('patch')
+        @csrf
+        <button class="material-icons">chevron_right</button>
+      </form>
     @endif
   </div>
 </div>

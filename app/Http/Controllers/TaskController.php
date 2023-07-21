@@ -26,7 +26,7 @@ class TaskController extends Controller
     }
 
     public function create(){
-        $pageTitle = 'Add task';
+        $pageTitle = 'Create Task';
         return view('tasks.create', ['pageTitle' => $pageTitle]);
     }
 
@@ -117,7 +117,39 @@ class TaskController extends Controller
     ]);
 }
 
+public function move(int $id, Request $request)
+{
+    $task = Task::findOrFail($id);
 
+    $task->update([
+        'status' => $request->status,
+    ]);
+
+    return redirect()->route('tasks.progress');
+}
+
+
+public function updateFromTaskList($id)
+{
+    $task = Task::find($id);
+
+    $task->update([
+        'status' => Task::STATUS_COMPLETED,
+    ]);
+
+    return redirect()->route('tasks.progress');
+}
+
+public function updateStatusCardBlade($id)
+{
+    $task = Task::find($id);
+
+    $task->update([
+        'status' => Task::STATUS_COMPLETED,
+    ]);
+
+    return redirect()->route('tasks.progress');
+}
 
 
     
