@@ -40,7 +40,7 @@ Route::name('auth.')
     ->group(function () {
         Route::get('signup', 'signupForm')->name('signupForm');
         Route::post('signup', 'signup')->name('signup');
-         // Tambahkan route-route di bawah
          Route::get('login', 'loginForm')->name('loginForm');
          Route::post('login', 'login')->name('login');
+         Route::post('logout', 'logout')->name('logout');
     });
