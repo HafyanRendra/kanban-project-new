@@ -52,5 +52,7 @@
 
       <button type="submit" class="form-button">Submit</button>
     </form>
+    <!-- Tamabahkan code berikut ini -->
+    <p class="auth-link">Already have an account? <a href="{{ route('auth.login') }}">Login here</a></p>
   </div>
 @endsection
