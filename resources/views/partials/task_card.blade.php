@@ -1,5 +1,6 @@
 <div class="task-progress-card">
   <div class="task-progress-card-left">
+    @can('update', $task)
     @if ($task->status == 'completed')
       <div  class="material-icons task-progress-card-top-checked">check_circle</div>
     @else
@@ -10,6 +11,7 @@
   <p class="task-progress-card-title">{{ $task->name }}</p>
   <div>
     <p>{{ $task->detail }}</p>
+    @endcan
   </div>
   <div>
     <p>Due on {{ $task->due_date }}</p>
