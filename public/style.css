@@ -185,6 +185,10 @@ body {
     padding: 16px;
   }
 
+.table-body-links {
+    width: 10%;
+  }
+
 .menu-icon {
     cursor: pointer;
 }

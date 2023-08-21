@@ -6,6 +6,7 @@ use App\Models\Task;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate; // uncomment
 
 class TaskController extends Controller
 {
@@ -56,7 +57,9 @@ class TaskController extends Controller
     public function edit($id)
     {
         $pageTitle = 'Edit Task';
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
+
+        Gate::authorize('update', $task); // Ditambahkan
 
         return view('tasks.edit', ['pageTitle' => $pageTitle, 'task' => $task]);
     }
@@ -64,7 +67,8 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
        // dd($request->all());
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
+        Gate::authorize('update', $task); // Ditambahkan
         $task->update([
             'name' => $request->name,
            'detail' => $request->detail,
@@ -77,13 +81,17 @@ class TaskController extends Controller
     public function delete($id)
     {
     $pageTitle = 'Delete Task'; // Menyebutkan judul dari halaman yaitu "Delete Task"
-    $task = Task::find($id); //  Memperoleh data task menggunakan $id
+    $task = Task::findOrFail($id); //  Memperoleh data task menggunakan $id
+    
+
+    Gate::authorize('delete', $task); // Ditambahkan
     return view('tasks.delete', ['pageTitle' => $pageTitle, 'task' => $task]);// Menghasilkan nilai return berupa file view dengan halaman dan data task di atas 
     }
 
     public function destroy($id)
     {
-    $task = Task::find($id);// Memperoleh task tertentu menggunakan $id
+    $task = Task::findorFail($id);// Memperoleh task tertentu menggunakan $id
+    Gate::authorize('delete', $task); // Ditambahkan
     $task->delete();
     return redirect()->route('tasks.index');// Melakukan redirect menuju tasks.index
     }
@@ -134,6 +142,7 @@ public function move(int $id, Request $request)
 public function updateFromTaskList($id)
 {
     $task = Task::find($id);
+    Gate::authorize('update', $task); // Ditambahkan
 
     $task->update([
         'status' => Task::STATUS_COMPLETED,
@@ -145,6 +154,7 @@ public function updateFromTaskList($id)
 public function updateStatusCardBlade($id)
 {
     $task = Task::find($id);
+    Gate::authorize('update', $task); // Ditambahkan
 
     $task->update([
         'status' => Task::STATUS_COMPLETED,

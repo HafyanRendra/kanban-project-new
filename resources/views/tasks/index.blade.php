@@ -24,11 +24,12 @@
     @foreach ($tasks as $index => $task)
       <div class="table-body">
         <div class="table-body-task-name">
-
+          @can('update', $task)
           <a href="{{route('tasks.updateFromTaskList',['id'=>$task->id])}}" class="material-icons @if ($task->status == 'completed') check-icon-completed @else check-icon @endif" >
             check_circle
           </a>
           {{ $task->name }}
+          @endcan
         </div>
         <div class="table-body-detail"> {{ $task->detail }} </div>
         <div class="table-body-due-date"> {{ $task->due_date }} </div>
@@ -48,9 +49,13 @@
           @endswitch
         </div>
         <div class="table-body-owner-name">{{ $task->user->name }}</div>
-        <div>
-          <a href="{{ route('tasks.edit', ['id' => $task->id]) }}">Edit</a>
-          <a href="{{ route('tasks.delete', ['id' => $task->id]) }}">Delete</a>
+        <div class="table-body-links">
+          @can('update', $task)
+            <a href="{{ route('tasks.edit', ['id' => $task->id]) }}">Edit</a>
+          @endcan
+          @can('delete', $task)
+            <a href="{{ route('tasks.delete', ['id' => $task->id]) }}">Delete</a>
+          @endcan
         </div>
       </div>
     @endforeach
