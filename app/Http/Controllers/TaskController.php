@@ -21,6 +21,12 @@ class TaskController extends Controller
     {
     $pageTitle = 'Task List'; // Ditambahkan
     $tasks = Task::all();
+    //if (Gate::allows('viewAnyTask', Task::class)) {
+    //    $tasks = Task::all();
+    //} else {
+    //    $tasks = Task::where('user_id', Auth::user()->id)->get();
+    //}
+   
     return view('tasks.index', [
         'pageTitle' => $pageTitle, //Ditambahkan
         'tasks' => $tasks,
@@ -59,7 +65,11 @@ class TaskController extends Controller
         $pageTitle = 'Edit Task';
         $task = Task::findOrFail($id);
 
-        Gate::authorize('update', $task); // Ditambahkan
+        //Gate::authorize('update', $task); // Ditambahkan
+        if (Gate::denies('performAsTaskOwner', $task)) {
+            Gate::authorize('updateAnyTask', Task::class);
+        }
+        
 
         return view('tasks.edit', ['pageTitle' => $pageTitle, 'task' => $task]);
     }
@@ -68,7 +78,11 @@ class TaskController extends Controller
     {
        // dd($request->all());
         $task = Task::findOrFail($id);
-        Gate::authorize('update', $task); // Ditambahkan
+        //Gate::authorize('update', $task); // Ditambahkan
+        if (Gate::denies('performAsTaskOwner', $task)) {
+            Gate::authorize('updateAnyTask', Task::class);
+        }
+        
         $task->update([
             'name' => $request->name,
            'detail' => $request->detail,
@@ -84,15 +98,23 @@ class TaskController extends Controller
     $task = Task::findOrFail($id); //  Memperoleh data task menggunakan $id
     
 
-    Gate::authorize('delete', $task); // Ditambahkan
+    //Gate::authorize('delete', $task); // Ditambahkan
+    if (Gate::denies('performAsTaskOwner', $task)) {
+        Gate::authorize('deleteAnyTask', Task::class);
+    }
+    
     return view('tasks.delete', ['pageTitle' => $pageTitle, 'task' => $task]);// Menghasilkan nilai return berupa file view dengan halaman dan data task di atas 
     }
 
     public function destroy($id)
     {
     $task = Task::findorFail($id);// Memperoleh task tertentu menggunakan $id
-    Gate::authorize('delete', $task); // Ditambahkan
-    $task->delete();
+   //Gate::authorize('delete', $task); // Ditambahkan
+   if (Gate::denies('performAsTaskOwner', $task)) {
+    Gate::authorize('deleteAnyTask', Task::class);
+}
+   $task->delete();
+    
     return redirect()->route('tasks.index');// Melakukan redirect menuju tasks.index
     }
 
@@ -101,7 +123,12 @@ class TaskController extends Controller
     
     $title = 'Task Progress';
 
-    $tasks = Task::all();
+    if (Gate::allows('viewAnyTask', Task::class)) {
+        $tasks = Task::all();
+    } else {
+        $tasks = Task::where('user_id', Auth::user()->id)->get();
+    }
+    //$tasks = Task::all();
 
     $filteredTasks = $tasks->groupBy('status');
     
@@ -120,7 +147,8 @@ class TaskController extends Controller
             Task::STATUS_COMPLETED, []
         ),
     ];
-
+    
+    //dd($tasks);
     return view('tasks.progress', [
         'pageTitle' => $title,
         'tasks' => $tasks,
@@ -130,7 +158,9 @@ class TaskController extends Controller
 public function move(int $id, Request $request)
 {
     $task = Task::findOrFail($id);
-
+    if (Gate::denies('performAsTaskOwner', $task)) {
+        Gate::authorize('updateAnyTask', Task::class);
+    }
     $task->update([
         'status' => $request->status,
     ]);
@@ -142,8 +172,10 @@ public function move(int $id, Request $request)
 public function updateFromTaskList($id)
 {
     $task = Task::find($id);
-    Gate::authorize('update', $task); // Ditambahkan
-
+    //Gate::authorize('update', $task); // Ditambahkan
+    if (Gate::denies('performAsTaskOwner', $task)) {
+        Gate::authorize('updateAnyTask', Task::class);
+    }
     $task->update([
         'status' => Task::STATUS_COMPLETED,
     ]);
@@ -154,8 +186,10 @@ public function updateFromTaskList($id)
 public function updateStatusCardBlade($id)
 {
     $task = Task::find($id);
-    Gate::authorize('update', $task); // Ditambahkan
-
+    //Gate::authorize('update', $task); // Ditambahkan
+    if (Gate::denies('performAsTaskOwner', $task)) {
+        Gate::authorize('updateAnyTask', Task::class);
+    }
     $task->update([
         'status' => Task::STATUS_COMPLETED,
     ]);

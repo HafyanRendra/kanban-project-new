@@ -5,6 +5,7 @@
 @section('main')
   <div class="task-list-container">
     <h1 class="task-list-heading">{{ $pageTitle }}</h1>
+   @can('createNewRoles', App\Models\Role::class)
     <div class="task-list-task-buttons">
       <a href="{{ route('roles.create') }}">
         <button  class="task-list-button">
@@ -12,6 +13,7 @@
         </button>
       </a>
     </div>
+    @endcan
 
     <div>
       <div class="task-list-table-head">

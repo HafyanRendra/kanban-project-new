@@ -277,18 +277,18 @@ body {
     justify-content: space-around;
   }
   
-  .task-progress-column {
+.task-progress-column {
     width: 22%;
   }
   
-  .task-progress-column-heading {
+.task-progress-column-heading {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0px 4px;
   }
   
-  .task-progress-card {
+.task-progress-card {
     background-color: rgb(199, 239, 208);
     border-radius: 12px;
     padding: 24px;
@@ -298,17 +298,17 @@ body {
     position: relative;
   }
   
-  .task-progress-card-left {
+.task-progress-card-left {
     display: flex;
     justify-content: space-between;
   }
   
-  .task-progress-card-right {
+.task-progress-card-right {
     display: flex;
     justify-content: flex-end;
   }
   
-  .task-progress-card-top-check {
+.task-progress-card-top-check {
     color: rgb(197, 197, 197);
     font-size: 28px;
     border: none;
@@ -318,22 +318,22 @@ body {
     cursor: pointer;
   }
   
-  .task-progress-card-top-checked {
+.task-progress-card-top-checked {
     color: rgb(85, 200, 159);
     cursor: default;
     font-size: 28px;
   }
   
-  .task-progress-card-top-edit {
+.task-progress-card-top-edit {
     cursor: pointer;
     text-decoration: none;
   }
   
-  .task-progress-card-title {
+.task-progress-card-title {
     font-size: 30px;
   }
 
-  .table-body-role-name {
+.table-body-role-name {
     width: 15%;
     padding: 16px;
     display: flex;
@@ -341,12 +341,22 @@ body {
     overflow-wrap: anywhere;
   }
   
-  .table-body-permission {
+.table-body-permission {
     width: 50%;
     padding: 50px;
     border-left: 1px solid #d8d8d8;
   }
   
-  .table-body-permission-item {
+.table-body-permission-item {
     padding: 4px 0;
+  }
+
+.table-body-user-name {
+    width: 15%;
+    padding: 16px;
+}
+  
+.table-body-user-role {
+    width: 30%;
+    padding: 16px;
   }

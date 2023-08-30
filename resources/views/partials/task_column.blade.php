@@ -1,7 +1,7 @@
 <div class="task-progress-column">
   <div class="task-progress-column-heading">
     <h2>{{ $title }}</h2>
-    <a href="{{route('tasks.create')}}">
+    <a style= "text-decoration:none" href="{{route('tasks.create')}}">
       <button class="task-list-button">
         <span class="material-icons">add</span>
       </button>
