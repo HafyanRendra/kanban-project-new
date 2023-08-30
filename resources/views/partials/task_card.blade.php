@@ -4,7 +4,7 @@
     @if ($task->status == 'completed')
       <div  class="material-icons task-progress-card-top-checked">check_circle</div>
     @else
-      <a href="{{route('tasks.updateStatusCardBlade',['id'=>$task->id])}}" class="material-icons task-progress-card-top-check">check_circle</a>
+      <a style= "text-decoration:none" href="{{route('tasks.updateStatusCardBlade',['id'=>$task->id])}}" class="material-icons task-progress-card-top-check">check_circle</a>
     @endif
     <a href="{{ route('tasks.edit', ['id' => $task->id]) }}" class="material-icons task-progress-card-top-edit">more_vert</a>
   </div>

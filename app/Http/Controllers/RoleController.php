@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\Permission;
+use Illuminate\Support\Facades\Gate; // uncomment
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,6 +15,7 @@ class RoleController extends Controller
 {
     public function index()
     {
+        // Gate::authorize('createNewRoles', Role::class);
         $pageTitle = 'Role Lists';
         $roles = Role::all();
 
@@ -23,6 +27,7 @@ class RoleController extends Controller
 
     public function create()
     {
+        Gate::authorize('createNewRoles', Role::class);
         $pageTitle = 'Add Role';
         $permissions = Permission::all();
         return view('roles.create', [
@@ -57,6 +62,8 @@ class RoleController extends Controller
 
     public function edit($id)
     {
+        Gate::authorize('createNewRoles', Role::class);
+
         $pageTitle = 'Edit Role';
         $role = role::findOrFail($id);
         $permissions = Permission::all();
@@ -70,6 +77,7 @@ class RoleController extends Controller
 
     public function update($id, Request $request)
     {
+        Gate::authorize('createNewRoles', Role::class);
         $role = role::findOrFail($id);
         $permissions = Permission::all();
         $role->update([
@@ -82,6 +90,7 @@ class RoleController extends Controller
 
     public function delete($id)
     {
+        Gate::authorize('createNewRoles', Role::class);
         $pageTitle = 'Delete role'; 
          $role = role::findOrFail($id); 
         
@@ -91,6 +100,7 @@ class RoleController extends Controller
 
     public function destroy($id)
     {
+        Gate::authorize('createNewRoles', Role::class);
         $role = role::findorFail($id);
         $role->delete();
         return redirect()->route('roles.index');
