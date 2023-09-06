@@ -131,7 +131,7 @@ body {
 
 .task-list-header-detail {
     padding: 16px;
-    width: 30%;
+    width: 20%;
 }
 
 .task-list-header-due-date {
@@ -142,6 +142,21 @@ body {
 .task-list-header-progress {
     padding: 16px;
     width: 15%;
+}
+
+.task-list-header-file {
+    padding: 16px;
+    width: 15%;
+}
+
+.task-list-header-owner-name {
+    padding: 16px;
+    width: 15%;
+}
+  
+  .task-list-header-links {
+    padding: 16px;
+    width: 10%;
 }
 
 .table-body {
@@ -162,7 +177,7 @@ body {
 }
 
 .table-body-detail {
-    width: 30%;
+    width: 20%;
     padding: 16px;
     overflow-wrap: anywhere;
     border-right: 1px solid #d8d8d8;
@@ -180,14 +195,20 @@ body {
     border-right: 1px solid #d8d8d8; /* Ditambahkan */
 }
 
-.table-body-owner-name {
-    width: 10%;
+.table-body-files {
+    width: 15%;
     padding: 16px;
+    border-right: 1px solid #d8d8d8;
   }
-
+  
+.table-body-owner-name {
+    width: 15%;
+    padding: 16px;
+}
+  
 .table-body-links {
     width: 10%;
-  }
+}
 
 .menu-icon {
     cursor: pointer;
@@ -332,6 +353,14 @@ body {
 .task-progress-card-title {
     font-size: 30px;
   }
+
+.task-progress-card-file {
+    display: flex;
+    align-items: center;
+    background-color: #e9ffee;
+    padding: 12px;
+    margin-bottom: 12px;
+}
 
 .table-body-role-name {
     width: 15%;
