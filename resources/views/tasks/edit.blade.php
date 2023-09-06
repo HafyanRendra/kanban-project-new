@@ -43,10 +43,14 @@
           </option>
         </select>
       </div>
-        <!-- Tambahkan code berikut ini-->
+      
+      <button type="submit" class="form-button">Submit</button>
+    </form>
+
+  </div>     
        
 
-  <div class="uploaded-files">
+<div class="uploaded-files">
     <h2 class="uploaded-files-title">Uploaded Files</h2>
     @if ($task->files)
       @foreach ($task->files as $file)
@@ -102,9 +106,7 @@
     </form>
   </div>
 
-  <form>
-  <button type="submit" class="form-button">Submit</button>
-  </form>
+
 </div>
   
 @endsection
