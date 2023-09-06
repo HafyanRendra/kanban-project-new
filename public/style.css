@@ -360,3 +360,25 @@ body {
     width: 30%;
     padding: 16px;
   }
+
+.uploaded-files {
+    padding: 0 50px;
+}
+  
+.uploaded-files-title {
+    color: rgb(42, 230, 164);
+}
+  
+.uploaded-file {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 30%;
+    padding: 12px;
+    border: 1px solid #333;
+    margin-bottom: 20px;
+}
+  
+.uploaded-file span {
+    color: #2ada1a;
+}
