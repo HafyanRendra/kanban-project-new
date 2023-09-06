@@ -7,6 +7,9 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate; // uncomment
+use Illuminate\Support\Facades\DB;
+use App\Models\TaskFile;
+
 
 class TaskController extends Controller
 {
@@ -45,10 +48,18 @@ class TaskController extends Controller
                 'name' => 'required',
                 'due_date' => 'required',
                 'status' => 'required',
+                'file' => ['max:5000', 'mimes:pdf,jpeg,png'],
             ],
+            [
+                'file.max' => 'The file size exceed 5 mb',
+                'file.mimes' => 'Must be a file of type: pdf,jpeg,png',
+            ],
+          
             $request->all()
         );
         
+        DB::beginTransaction();
+        try {
         Task::create([
             'name' => $request->name,
             'detail' => $request->detail,
@@ -57,7 +68,31 @@ class TaskController extends Controller
             'user_id' => Auth::user()->id,
         ]);
 
-        return redirect()->route('tasks.index');
+        $file = $request->file('file');
+        if ($file) {
+            $filename = $file->getClientOriginalName();
+            $path = $file->storePubliclyAs(
+                'tasks',
+                $file->hashName(),
+                'public'
+            );
+
+            TaskFile::create([
+                'task_id' => $task->id,
+                'filename' => $filename,
+                'path' => $path,
+            ]);
+        }
+
+        DB::commit();
+
+        return redirect()->route('tasks.index');}
+        catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()
+                ->route('tasks.create')
+                ->with('error', $th->getMessage());
+        }
     }
 
     public function edit($id)

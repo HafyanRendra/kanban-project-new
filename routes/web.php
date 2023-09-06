@@ -5,6 +5,7 @@ use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TaskFileController;
 
 
 /*
@@ -21,11 +22,12 @@ use App\Http\Controllers\UserController;
 Route::get('/', [TaskController::class, 'home'])
     ->name('home')
     ->middleware('auth');
+
 Route::prefix('tasks')
 ->name('tasks.')
 ->middleware('auth')
-->controller(TaskController::class)
 ->group(function () {
+    Route::controller(TaskController::class)->group(function () {
     Route::get('/', 'index')->name('index');
     Route::get('create', 'create')->name('create');
     Route::post('/', 'store')->name('store');
@@ -37,7 +39,17 @@ Route::prefix('tasks')
     Route::patch('{id}/move','move')->name('move');
     Route::get('{id}/updateFromTaskList','updateFromTaskList')->name('updateFromTaskList');
     Route::get('{id}/updateStatusCardBlade','updateStatusCardBlade')->name('updateStatusCardBlade');
+    });
+    Route::prefix('{task_id}/files')
+            ->name('files.')
+            ->controller(TaskFileController::class)
+            ->group(function () {
+                Route::post('store', 'store')->name('store');
+                Route::get('{id}/show', 'show')->name('show');
+                Route::delete('{id}/destroy', 'destroy')->name('destroy');
+            });
 }); 
+
 
 Route::name('auth.')
     ->controller(AuthController::class)
