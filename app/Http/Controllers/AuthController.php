@@ -63,20 +63,33 @@ class AuthController extends Controller
     $credentials = $request->only('email', 'password');
 
     if (Auth::attempt($credentials)) {
-        return redirect()->route('home');
-    }
-
-    return redirect()
-        ->back()
-        ->withInput($request->only('email'))
-        ->withErrors([
-            'email' => 'These credentials do not match our records.',
+        $token=$request->user()->createToken('Kanban-user-login');
+        // return redirect()->route('home');
+        return response()->json([
+            'code'=>200,
+            'message'=> 'Login success!',
+            'token'=>$token->plainTextToken
         ]);
     }
 
-    public function logout()
+    // return redirect()
+    //     ->back()
+    //     ->withInput($request->only('email'))
+    //     ->withErrors([
+    //         'email' => 'These credentials do not match our records.',
+    //     ]);
+    }
+
+    public function logout(Request $request)
     {
-    Auth::logout();
-    return redirect()->route('auth.login');
+    // Auth::logout();
+    $request->user()->currentAccessToken()->delete();
+    // $request->user()->tokens()->delete();
+    // return redirect()->route('auth.login');
+    return response()->json([
+        'code'=>200,
+        'message'=> 'Logout success!',
+    
+    ]);
     }
 }
