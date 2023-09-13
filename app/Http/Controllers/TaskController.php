@@ -8,7 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate; // uncomment
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Models\TaskFile;
+use Illuminate\Http\Response;
+use App\Http\Resources\TaskResource;
+
 
 
 class TaskController extends Controller
@@ -29,11 +33,15 @@ class TaskController extends Controller
     //} else {
     //    $tasks = Task::where('user_id', Auth::user()->id)->get();
     //}
-   
-    return view('tasks.index', [
-        'pageTitle' => $pageTitle, //Ditambahkan
-        'tasks' => $tasks,
-    ]);
+   return response()->json([
+    'code'=>200,
+    'message'=> 'Task successfully',
+    'data'=> TaskResource::collection($tasks),
+   ]);
+    // return view('tasks.index', [
+    //     'pageTitle' => $pageTitle, //Ditambahkan
+    //     'tasks' => $tasks,
+    // ]);
     }
 
     public function create(){
@@ -83,30 +91,43 @@ class TaskController extends Controller
                 'path' => $path,
             ]);
         }
-
+        $pageTitle = 'Task List'; // Ditambahkan
+        $tasks = Task::all();
         DB::commit();
+        return response()->json([
+            'code'=>200,
+            'message'=> 'Task created successfully',
+           ]);
+        // return redirect()->route('tasks.index');}
+        // catch (\Throwable $th) {
+         DB::rollBack();
+         return response()->json([
+            'code'=>200,
+            'message'=> 'Task created unsuccessfully',
+           ]);
 
-        return redirect()->route('tasks.index');}
-        catch (\Throwable $th) {
-            DB::rollBack();
-            return redirect()
-                ->route('tasks.create')
-                ->with('error', $th->getMessage());
-        }
+        //     return redirect()
+        //         ->route('tasks.create')
+        //         ->with('error', $th->getMessage());
+        // }
     }
 
-    public function edit($id)
+     public function edit($id)
     {
-        $pageTitle = 'Edit Task';
-        $task = Task::findOrFail($id);
+        // $pageTitle = 'Edit Task';
+        // $task = Task::findOrFail($id);
+        $task = Task::find($id);
 
-        //Gate::authorize('update', $task); // Ditambahkan
-        if (Gate::denies('performAsTaskOwner', $task)) {
-            Gate::authorize('updateAnyTask', Task::class);
-        }
+        return response()->json([
+            'data'=> new TaskResource($task),
+           ], Response::HTTP_OK);
+        // Gate::authorize('update', $task); // Ditambahkan
+        // if (Gate::denies('performAsTaskOwner', $task)) {
+        //     Gate::authorize('updateAnyTask', Task::class);
+        // }
         
 
-        return view('tasks.edit', ['pageTitle' => $pageTitle, 'task' => $task]);
+        // return view('tasks.edit', ['pageTitle' => $pageTitle, 'task' => $task]);
     }
 
     public function update(Request $request, $id)
@@ -114,9 +135,9 @@ class TaskController extends Controller
        // dd($request->all());
         $task = Task::findOrFail($id);
         //Gate::authorize('update', $task); // Ditambahkan
-        if (Gate::denies('performAsTaskOwner', $task)) {
-            Gate::authorize('updateAnyTask', Task::class);
-        }
+        // if (Gate::denies('performAsTaskOwner', $task)) {
+        //     Gate::authorize('updateAnyTask', Task::class);
+        // }
         
         $task->update([
             'name' => $request->name,
@@ -124,7 +145,11 @@ class TaskController extends Controller
             'due_date' => $request->due_date,
             'status' => $request->status,
         ]);
-        return redirect()->route('tasks.index');
+        // return redirect()->route('tasks.index');
+        return response()->json([
+            'code'=>200,
+            'message'=> 'Task update successfully',
+           ]);
     }
 
     public function delete($id)
@@ -143,64 +168,82 @@ class TaskController extends Controller
 
     public function destroy($id)
     {
-    $task = Task::findorFail($id);// Memperoleh task tertentu menggunakan $id
-   //Gate::authorize('delete', $task); // Ditambahkan
-   if (Gate::denies('performAsTaskOwner', $task)) {
-    Gate::authorize('deleteAnyTask', Task::class);
-}
-   $task->delete();
+    // $task = Task::findorFail($id);// Memperoleh task tertentu menggunakan $id
     
-    return redirect()->route('tasks.index');// Melakukan redirect menuju tasks.index
-    }
-
-    public function progress()
-{
+//    //Gate::authorize('delete', $task); // Ditambahkan
+//    if (Gate::denies('performAsTaskOwner', $task)) {
+//     Gate::authorize('deleteAnyTask', Task::class);
+// }
+//    $task->delete();
     
-    $title = 'Task Progress';
+//     return redirect()->route('tasks.index');// Melakukan redirect menuju tasks.index
+//     }
 
-    if (Gate::allows('viewAnyTask', Task::class)) {
-        $tasks = Task::all();
-    } else {
-        $tasks = Task::where('user_id', Auth::user()->id)->get();
-    }
-    //$tasks = Task::all();
+//     public function progress()
+// {
+    
+//     $title = 'Task Progress';
 
-    $filteredTasks = $tasks->groupBy('status');
+//     if (Gate::allows('viewAnyTask', Task::class)) {
+//         $tasks = Task::all();
+//     } else {
+//         $tasks = Task::where('user_id', Auth::user()->id)->get();
+//     }
+//     //$tasks = Task::all();
+
+//     $filteredTasks = $tasks->groupBy('status');
     
    
-    $tasks = [
-        Task::STATUS_NOT_STARTED => $filteredTasks->get(
-            Task::STATUS_NOT_STARTED, []
-        ),
-        Task::STATUS_IN_PROGRESS => $filteredTasks->get(
-            Task::STATUS_IN_PROGRESS, []
-        ),
-        Task::STATUS_IN_REVIEW => $filteredTasks->get(
-            Task::STATUS_IN_REVIEW, []
-        ),
-        Task::STATUS_COMPLETED => $filteredTasks->get(
-            Task::STATUS_COMPLETED, []
-        ),
-    ];
+//     $tasks = [
+//         Task::STATUS_NOT_STARTED => $filteredTasks->get(
+//             Task::STATUS_NOT_STARTED, []
+//         ),
+//         Task::STATUS_IN_PROGRESS => $filteredTasks->get(
+//             Task::STATUS_IN_PROGRESS, []
+//         ),
+//         Task::STATUS_IN_REVIEW => $filteredTasks->get(
+//             Task::STATUS_IN_REVIEW, []
+//         ),
+//         Task::STATUS_COMPLETED => $filteredTasks->get(
+//             Task::STATUS_COMPLETED, []
+//         ),
+//     ];
     
-    //dd($tasks);
-    return view('tasks.progress', [
-        'pageTitle' => $title,
-        'tasks' => $tasks,
-    ]);
+//     //dd($tasks);
+//     return view('tasks.progress', [
+//         'pageTitle' => $title,
+//         'tasks' => $tasks,
+//     ]);
+        $task = Task::find($id);
+        foreach($task->files as $file){
+            Storage::disk('public')->delete($file->path);
+            $file->delete;
+        }
+       
+        $task->delete;
+        return response()->json([
+    
+        'message'=> 'Tasks'. $task->name. 'Delete data successfully',
+    
+   ]);
 }
 
 public function move(int $id, Request $request)
 {
     $task = Task::findOrFail($id);
+    // $task = Task::find($id);
     if (Gate::denies('performAsTaskOwner', $task)) {
         Gate::authorize('updateAnyTask', Task::class);
     }
     $task->update([
         'status' => $request->status,
     ]);
-
-    return redirect()->route('tasks.progress');
+    // return response()->json([
+    //     'code'=>200,
+    //     'message'=> 'Task successfully',
+    //     'data'=> TaskResource::collection($task),
+    //    ]);
+    // return redirect()->route('tasks.progress');
 }
 
 
@@ -234,7 +277,8 @@ public function updateStatusCardBlade($id)
 
 public function home()
 {
-    $tasks = Task::where('user_id', auth()->id())->get();
+    // $tasks = Task::where('user_id', auth()->id())->get();
+    $tasks = Task::get();
 
     $completed_count = $tasks
         ->where('status', Task::STATUS_COMPLETED)
@@ -243,11 +287,17 @@ public function home()
     $uncompleted_count = $tasks
         ->whereNotIn('status', Task::STATUS_COMPLETED)
         ->count();
-
-    return view('home', [
+    
+    return response()->json([
         'completed_count' => $completed_count,
-        'uncompleted_count' => $uncompleted_count,
-    ]);
+         'uncompleted_count' => $uncompleted_count,
+    ], Response::HTTP_NOT_FOUND);
+    
+
+//     return view('home', [
+//         'completed_count' => $completed_count,
+//         'uncompleted_count' => $uncompleted_count,
+//     ]);
 }
 
     
