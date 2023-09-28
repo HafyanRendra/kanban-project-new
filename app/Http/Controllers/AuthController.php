@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+// use App\Http\Resources\TaskResource;
 use Illuminate\Http\Request;
 use App\Models\User; // Ditambahkan
 use Illuminate\Support\Facades\Auth; // Ditambahkan
@@ -30,7 +31,7 @@ class AuthController extends Controller
             $request->all()
         );
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -39,57 +40,65 @@ class AuthController extends Controller
         Auth::attempt([
             'email' => $request->email,
             'password' => $request->password,
+
         ]);
 
         return redirect()->route('home');
+        // return response()->json([
+        //     'code' => 200,
+        //     'message' => 'New user has been registered',
+        //     'data' => $user,
+
+
+        // ]);
     }
 
     public function loginForm()
     {
-    $pageTitle = 'Login';
-    return view('auth.login_form', ['pageTitle' => $pageTitle]);
+        $pageTitle = 'Login';
+        return view('auth.login_form', ['pageTitle' => $pageTitle]);
     }
 
     public function login(Request $request)
     {
-    $request->validate(
-        [
-            'email' => ['required', 'email'],
-            'password' => 'required',
-        ],
-        $request->all()
-    );
+        $request->validate(
+            [
+                'email' => ['required', 'email'],
+                'password' => 'required',
+            ],
+            $request->all()
+        );
 
-    $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password');
 
-    if (Auth::attempt($credentials)) {
-        $token=$request->user()->createToken('Kanban-user-login');
-        // return redirect()->route('home');
-        return response()->json([
-            'code'=>200,
-            'message'=> 'Login success!',
-            'token'=>$token->plainTextToken
-        ]);
-    }
+        // if (Auth::attempt($credentials)) {
+        //     $token = $request->user()->createToken('Kanban-user-login');
+            return redirect()->route('home');
+            // return response()->json([
+            //     'code' => 200,
+            //     'message' => 'Login success!',
+            //     'token' => $token->plainTextToken
+            // ]);
+        // }
 
-    // return redirect()
-    //     ->back()
-    //     ->withInput($request->only('email'))
-    //     ->withErrors([
-    //         'email' => 'These credentials do not match our records.',
-    //     ]);
+        return redirect()
+            ->back()
+            ->withInput($request->only('email'))
+            ->withErrors([
+                'email' => 'These credentials do not match our records.',
+            ]);
     }
 
     public function logout(Request $request)
     {
-    // Auth::logout();
-    $request->user()->currentAccessToken()->delete();
-    // $request->user()->tokens()->delete();
-    // return redirect()->route('auth.login');
-    return response()->json([
-        'code'=>200,
-        'message'=> 'Logout success!',
-    
-    ]);
+        Auth::logout();
+        // $request->user()->currentAccessToken()->delete();
+        $request->user()->tokens()->delete();
+        return redirect()->route('auth.login');
+        // return response()->json([
+        //     'code' => 200,
+        //     'message' => 'Logout success!',
+
+        // ]);
     }
 }
