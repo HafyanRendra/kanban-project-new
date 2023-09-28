@@ -15,9 +15,14 @@ class RoleController extends Controller
 {
     public function index()
     {
-        // Gate::authorize('createNewRoles', Role::class);
+        Gate::authorize('createNewRoles', Role::class);
         $pageTitle = 'Role Lists';
         $roles = Role::all();
+
+        // return response()->json([
+        //     'code'=>200,
+        //     'message'=> 'Task successfully',
+        //    ]);
 
         return view('roles.index', [
             'pageTitle' => $pageTitle,
